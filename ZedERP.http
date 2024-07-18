@@ -1,0 +1,6 @@
+@ZedERP_HostAddress = http://localhost:5162
+
+GET {{ZedERP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
