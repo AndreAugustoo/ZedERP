@@ -1,7 +1,7 @@
 ﻿using ISManager.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ZedERP.Models.Entities;
+using ZedERP.Models.Entities.Product;
 
 namespace ZedERP.Data
 {
@@ -12,6 +12,8 @@ namespace ZedERP.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

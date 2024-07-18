@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ZedERP.Models.Entities.Product;
 using Microsoft.EntityFrameworkCore;
-using ZedERP.Data;
+using Microsoft.AspNetCore.Mvc;
 using ZedERP.Models;
-using ZedERP.Models.Entities;
+using ZedERP.Data;
 
 namespace ZedERP.Controllers
 {
@@ -19,18 +19,23 @@ namespace ZedERP.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var allProducts = await dbContext.Products.ToListAsync();
+            var allProducts = await dbContext.Products
+                .Include(p => p.Group)
+                .Include(p => p.Unit)
+                .ToListAsync();
 
             return Ok(allProducts);
         }
 
-        [HttpGet]
-        [Route("{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await dbContext.Products.FindAsync(id);
+            var product = await dbContext.Products
+                .Include(p => p.Group)
+                .Include(p => p.Unit)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (product is null)
+            if (product == null)
             {
                 return NotFound();
             }
@@ -41,10 +46,12 @@ namespace ZedERP.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct(AddProductDto addProductDto)
         {
-            var productEntity = new Product() 
+            var productEntity = new Product()
             {
                 Code = addProductDto.Code,
                 Name = addProductDto.Name,
+                GroupId = addProductDto.GroupId,
+                UnitId = addProductDto.UnitId
             };
 
             await dbContext.Products.AddAsync(productEntity);
@@ -53,32 +60,32 @@ namespace ZedERP.Controllers
             return Ok(productEntity);
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto updateProductDto)
         {
             var product = await dbContext.Products.FindAsync(id);
 
-            if (product is null)
+            if (product == null)
             {
                 return NotFound();
             }
 
             product.Code = updateProductDto.Code;
             product.Name = updateProductDto.Name;
+            product.GroupId = updateProductDto.GroupId;
+            product.UnitId = updateProductDto.UnitId;
 
             await dbContext.SaveChangesAsync();
 
             return Ok(product);
         }
 
-        [HttpDelete]
-        [Route("{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await dbContext.Products.FindAsync(id);
 
-            if (product is null)
+            if (product == null)
             {
                 return NotFound();
             }
