@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ZedERP.Models.Entities
 {
@@ -7,7 +8,7 @@ namespace ZedERP.Models.Entities
         public int Id { get; set; }
         [Required]
         [StringLength(14)]
-        public required string Codigo { get; set; }
+        public required string Code { get; set; }
         [Required]
         [StringLength(255)]
         public required string Name { get; set; }

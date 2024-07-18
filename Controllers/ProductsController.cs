@@ -43,7 +43,7 @@ namespace ZedERP.Controllers
         {
             var productEntity = new Product() 
             {
-                Codigo = addProductDto.Codigo,
+                Code = addProductDto.Code,
                 Name = addProductDto.Name,
             };
 
@@ -64,7 +64,7 @@ namespace ZedERP.Controllers
                 return NotFound();
             }
 
-            product.Codigo = updateProductDto.Codigo;
+            product.Code = updateProductDto.Code;
             product.Name = updateProductDto.Name;
 
             await dbContext.SaveChangesAsync();
