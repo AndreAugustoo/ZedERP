@@ -1,0 +1,10 @@
+<div *ngIf="units.length > 0">
+  <ul>
+    <li *ngFor="let unit of units">
+      {{ unit.unitSymbol }} - {{ unit.description }}
+    </li>
+  </ul>
+</div>
+<div *ngIf="units.length === 0">
+  No units available.
+</div>
