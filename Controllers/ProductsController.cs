@@ -1,8 +1,8 @@
 ﻿using ZedERP.Models.Entities.Product;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using ZedERP.Models;
 using ZedERP.Data;
+using ZedERP.Models.DTOs.Product;
 
 namespace ZedERP.Controllers
 {
@@ -20,8 +20,16 @@ namespace ZedERP.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var allProducts = await dbContext.Products
-                .Include(p => p.Group)
-                .Include(p => p.Unit)
+                .Select(p => new UpdateProductDto
+                {
+                    Code = p.Code,
+                    Name = p.Name,
+                    GroupId = p.GroupId,
+                    UnitId = p.UnitId,
+                    SalePrice = p.SalePrice,
+                    Stock = p.Stock,
+                    Image = p.Image
+                })
                 .ToListAsync();
 
             return Ok(allProducts);
@@ -30,10 +38,7 @@ namespace ZedERP.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await dbContext.Products
-                .Include(p => p.Group)
-                .Include(p => p.Unit)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var product = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -51,7 +56,10 @@ namespace ZedERP.Controllers
                 Code = addProductDto.Code,
                 Name = addProductDto.Name,
                 GroupId = addProductDto.GroupId,
-                UnitId = addProductDto.UnitId
+                UnitId = addProductDto.UnitId,
+                SalePrice = addProductDto.SalePrice,
+                Stock = addProductDto.Stock,
+                Image = addProductDto.Image,
             };
 
             await dbContext.Products.AddAsync(productEntity);
@@ -74,6 +82,9 @@ namespace ZedERP.Controllers
             product.Name = updateProductDto.Name;
             product.GroupId = updateProductDto.GroupId;
             product.UnitId = updateProductDto.UnitId;
+            product.SalePrice = updateProductDto.SalePrice;
+            product.Stock = updateProductDto.Stock;
+            product.Image = updateProductDto.Image;
 
             await dbContext.SaveChangesAsync();
 

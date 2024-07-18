@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ZedERP-client\**" />
+    <Compile Remove="ZedERP.Client\**" />
+    <Content Remove="ZedERP-client\**" />
+    <Content Remove="ZedERP.Client\**" />
+    <EmbeddedResource Remove="ZedERP-client\**" />
+    <EmbeddedResource Remove="ZedERP.Client\**" />
+    <None Remove="ZedERP-client\**" />
+    <None Remove="ZedERP.Client\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\WeatherForecastController.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
