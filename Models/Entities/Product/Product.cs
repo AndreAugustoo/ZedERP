@@ -19,7 +19,7 @@ namespace ZedERP.Models.Entities.Product
         [ForeignKey("GroupId")]
         public Group? Group { get; set; }
 
-        public required int UnitId { get; set; }
+        public int UnitId { get; set; }
         [ForeignKey("UnitId")]
         public Unit? Unit { get; set; }
 

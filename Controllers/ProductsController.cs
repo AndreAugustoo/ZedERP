@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using ZedERP.Data;
 using ZedERP.Models.DTOs.Product;
+using ZedERP.Models.DTOs.Product.Group;
+using ZedERP.Models.DTOs.Product.Unit;
 
 namespace ZedERP.Controllers
 {
@@ -20,12 +22,23 @@ namespace ZedERP.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var allProducts = await dbContext.Products
+                .Include(p => p.Group)
+                .Include(p => p.Unit)
                 .Select(p => new UpdateProductDto
                 {
                     Code = p.Code,
                     Name = p.Name,
-                    GroupId = p.GroupId,
-                    UnitId = p.UnitId,
+                    Group = p.Group != null ? new UpdateGroupDto
+                    {
+                        Id = p.Group.Id,
+                        Name = p.Group.Name
+                    } : null,
+                    Unit = p.Unit != null ? new UpdateUnitDto
+                    {
+                        Id = p.Unit.Id,
+                        UnitSymbol = p.Unit.UnitSymbol,
+                        Description = p.Unit.Description,
+                    } : null,
                     SalePrice = p.SalePrice,
                     Stock = p.Stock,
                     Image = p.Image
@@ -38,14 +51,37 @@ namespace ZedERP.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var product = await dbContext.Products
+        .Include(p => p.Group)
+        .Include(p => p.Unit)
+        .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(product);
+            var productDto = new UpdateProductDto
+            {
+                Code = product.Code,
+                Name = product.Name,
+                Group = product.Group != null ? new UpdateGroupDto
+                {
+                    Id = product.Group.Id,
+                    Name = product.Group.Name
+                } : null,
+                Unit = product.Unit != null ? new UpdateUnitDto
+                {
+                    Id = product.Unit.Id,
+                    UnitSymbol = product.Unit.UnitSymbol,
+                    Description= product.Unit.Description,
+                } : null,
+                SalePrice = product.SalePrice,
+                Stock = product.Stock,
+                Image = product.Image
+            };
+
+            return Ok(productDto);
         }
 
         [HttpPost]
